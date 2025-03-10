@@ -1,0 +1,2 @@
+.terraform/
+.update_github_secret.sh
