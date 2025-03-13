@@ -36,4 +36,4 @@ jobs:
       # 4️⃣ Run Ansible Playbook (Setup Server)
       - name: Run Ansible Playbook (Setup Server)
         run: |
-          ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key ~/.ssh/id_rsa setup_server.yml
+          ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key ~/.ssh/id_ed25519 setup_server.yml
