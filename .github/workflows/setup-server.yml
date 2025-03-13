@@ -35,7 +35,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/raktas.pem
-          hmod 600 ~/.ssh/raktas.pem
+          chmod 600 ~/.ssh/raktas.pem
           ssh-keyscan -H ${{ github.event.inputs.AWS_HOST }} > ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
