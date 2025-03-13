@@ -28,7 +28,7 @@ jobs:
       - name: Setup SSH Key
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > manoKey.pem
-          chmod 600 ~/.ssh/manoKey.pem
+          chmod 600 manoKey.pem
       #    ssh-keyscan -H ${{ github.event.inputs.AWS_HOST }} >> ~/.ssh/known_hosts
       # - name: Setup SSH Key
       #   run: |
