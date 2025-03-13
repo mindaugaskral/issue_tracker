@@ -20,7 +20,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.PRIVATE_KEY }}" | base64 --decode > ~/.ssh/raktas.pem
-          chmod 600 ~/.ssh/iraktas.pem
+          chmod 600 ~/.ssh/raktas.pem
           ssh-keyscan -H ${{ secrets.AWS_HOST }} >> ~/.ssh/known_hosts
 
       # 3️⃣ Deploy Laravel App via Ansible
