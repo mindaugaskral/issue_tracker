@@ -60,6 +60,27 @@
         name: mysql_data
         state: present
 
+    # 4️⃣ Ensure PHP-FPM is Installed (Dynamically Check Correct Version)
+    - name: Install PHP-FPM
+      apt:
+        name: php-fpm
+        state: present
+      register: php_fpm_installed
+
+    # 5️⃣ Get Correct PHP-FPM Version
+    - name: Find installed PHP-FPM version
+      shell: ls /etc/init.d/ | grep php
+      register: php_fpm_version
+      changed_when: false
+
+    # 6️⃣ Start and Enable PHP-FPM Service
+    - name: Start and enable PHP-FPM service
+      systemd:
+        name: "{{ php_fpm_version.stdout }}"
+        enabled: yes
+        state: started
+      when: php_fpm_version.stdout | length > 0
+  
     # 4️⃣ Ensure PHP-FPM is Installed and Running
     - name: Start and enable PHP-FPM service
       systemd:
