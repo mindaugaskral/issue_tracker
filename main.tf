@@ -81,7 +81,7 @@ resource "aws_instance" "my_instance" {
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.my_subnet.id
   vpc_security_group_ids = [aws_security_group.my_sg.id]  # ✅ Fixed security group reference
-  key_name               = "manoKey"  # ✅ Replace with your actual key pair name
+  key_name               = "raktas"  # ✅ Replace with your actual key pair name
 
   tags = {
     Name = "MyEC2Instance"
