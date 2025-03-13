@@ -61,3 +61,13 @@ jobs:
       - name: Terraform Destroy
         if: ${{ github.event.inputs.action == 'destroy' }}
         run: terraform destroy -auto-approve
+      
+      # 8️⃣ Terraform Apply Before Destroy (Ensures State is Synced)
+      - name: Terraform Refresh & Apply Before Destroy
+        if: ${{ github.event.inputs.action == 'destroy' }}
+        run: terraform apply -refresh-only -auto-approve
+
+      # 9️⃣ Terraform Destroy
+      - name: Terraform Destroy
+        if: ${{ github.event.inputs.action == 'destroy' }}
+        run: terraform destroy -auto-approve

@@ -28,6 +28,19 @@
           - mysql-client
           - nginx  # ✅ Ensure Nginx is installed
         state: present
+    
+    # 1️⃣ Ensure the Docker Group Exists (Avoid Restart)
+    - name: Create docker group if it does not exist
+      group:
+        name: docker
+        state: present
+
+    # 2️⃣ Add ubuntu User to Docker Group Before Installation
+    - name: Add ubuntu user to docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
 
     # 2️⃣ Start and Enable Docker Service
     - name: Start and enable Docker
