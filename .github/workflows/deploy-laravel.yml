@@ -26,4 +26,4 @@ jobs:
       # 3️⃣ Deploy Laravel App via Ansible
       - name: Run Ansible Playbook
         run: |
-          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key ~/.ssh/raktas.pem deploy_laravel.yml
+          ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key ~/.ssh/raktas.pem deploy_laravel.yml
