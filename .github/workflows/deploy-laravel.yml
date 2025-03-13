@@ -1,31 +1,29 @@
-name: Deploy Laravel to EC2
+name: Deploy Laravel to Docker
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
-    inputs:
-      AWS_HOST:
-        description: "EC2 Instance IP Address"
-        required: true
-      AWS_USER:
-        description: "SSH Username (e.g., ubuntu, ec2-user)"
-        required: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout Repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-- name: Setup SSH Key
+      # 2️⃣ Setup SSH Key for Server Access
+      - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.PRIVATE_KEY }}" | base64 -d > ~/.ssh/raktas.pem
-          chmod 600 ~/.ssh/raktas.pem
-          ssh-keyscan -H ${{ github.event.inputs.AWS_HOST }} > ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts
+          echo "${{ secrets.AWS_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/raktas.pem
+          chmod 600 ~/.ssh/iraktas.pem
+          ssh-keyscan -H ${{ secrets.AWS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Run Ansible Playbook (Deploy Laravel)
+      # 3️⃣ Deploy Laravel App via Ansible
+      - name: Run Ansible Playbook
         run: |
-          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key ~/.ssh/manoraktaskey.pem deploy_laravel.yml
+          ansible-playbook -i ${{ secrets.AWS_HOST }}, -u ubuntu --private-key ~/.ssh/raktas.pem deploy_laravel.yml

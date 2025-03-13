@@ -1,11 +1,39 @@
-# Use official PHP FPM image
 FROM php:8.1-fpm
 
-# Copy our index.php file to the container
-COPY index.php /var/www/html/
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    zip \
+    unzip \
+    git \
+    curl \
+    supervisor \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd pdo pdo_mysql
 
-# Set permissions for the web root
-RUN chown -R www-data:www-data /var/www/html
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Expose the FPM port (needed for Nginx to communicate with PHP)
+# Set working directory
+WORKDIR /var/www
+
+# Copy application files
+COPY . .
+
+# Install Laravel dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+
+# Expose port
 EXPOSE 9000
+
+# Ensure Laravel storage is writable
+RUN mkdir -p /var/www/storage/framework/{sessions,views,cache} \
+    && chmod -R 777 /var/www/storage
+
+# Start PHP-FPM
+CMD ["php-fpm"]
