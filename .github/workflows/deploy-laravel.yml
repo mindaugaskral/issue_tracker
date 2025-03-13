@@ -2,6 +2,13 @@ name: Deploy Laravel to Docker
 
 on:
   workflow_dispatch:
+    inputs:
+      AWS_HOST:
+        description: "EC2 Instance IP Address"
+        required: true
+      AWS_USER:
+        description: "SSH Username (e.g., ubuntu, ec2-user)"
+        required: true
 
 jobs:
   deploy:
