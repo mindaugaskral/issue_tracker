@@ -19,7 +19,7 @@ jobs:
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.AWS_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/raktas.pem
+          echo "${{ secrets.PRIVATE_KEY }}" | base64 --decode > ~/.ssh/raktas.pem
           chmod 600 ~/.ssh/iraktas.pem
           ssh-keyscan -H ${{ secrets.AWS_HOST }} >> ~/.ssh/known_hosts
 
