@@ -9,7 +9,7 @@
     db_password: "securepassword"
 
   tasks:
-    # 1️⃣ Update and install dependencies
+    # 1️⃣ Update and Install Dependencies
     - name: Update apt and install required packages
       apt:
         update_cache: yes
@@ -18,6 +18,7 @@
           - docker-compose
           - unzip
           - php-cli
+          - php-fpm
           - php-mbstring
           - php-xml
           - php-bcmath
@@ -25,16 +26,17 @@
           - php-curl
           - php-mysql
           - mysql-client
+          - nginx  # ✅ Ensure Nginx is installed
         state: present
 
-    # 2️⃣ Start and enable Docker service
+    # 2️⃣ Start and Enable Docker Service
     - name: Start and enable Docker
       systemd:
         name: docker
         enabled: yes
         state: started
 
-    # 3️⃣ Pull the MySQL Docker image and run it
+    # 3️⃣ Ensure MySQL Container is Running with Persistent Data
     - name: Run MySQL container
       docker_container:
         name: mysql-db
@@ -50,14 +52,35 @@
           MYSQL_PASSWORD: "{{ db_password }}"
         volumes:
           - mysql_data:/var/lib/mysql
+      register: mysql_container
 
-    # 4️⃣ Pull PHP Docker image
+    # 3.1️⃣ Ensure Docker Volume Exists for MySQL Data Persistence
+    - name: Create persistent Docker volume for MySQL
+      docker_volume:
+        name: mysql_data
+        state: present
+
+    # 4️⃣ Ensure PHP-FPM is Installed and Running
+    - name: Start and enable PHP-FPM service
+      systemd:
+        name: php8.1-fpm
+        enabled: yes
+        state: started
+
+    # 5️⃣ Ensure Nginx is Installed and Running
+    - name: Start and enable Nginx service
+      systemd:
+        name: nginx
+        enabled: yes
+        state: started
+
+    # 6️⃣ Pull PHP Docker Image (If Required)
     - name: Pull PHP Docker image
       docker_image:
         name: php:8.1-fpm
         source: pull
 
-    # 5️⃣ Pull Nginx Docker image
+    # 7️⃣ Pull Nginx Docker Image (If Required)
     - name: Pull Nginx Docker image
       docker_image:
         name: nginx:latest

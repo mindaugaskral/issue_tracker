@@ -18,13 +18,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup SSH Key
+- name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.AWS_PRIVATE_KEY }}" > ~/.ssh/manokey.pem
-          chmod 600 ~/.ssh/manokey.pem
-          ssh-keyscan -H ${{ github.event.inputs.AWS_HOST }} >> ~/.ssh/known_hosts
+          echo "${{ secrets.PRIVATE_KEY }}" | base64 -d > ~/.ssh/raktas.pem
+          chmod 600 ~/.ssh/raktas.pem
+          ssh-keyscan -H ${{ github.event.inputs.AWS_HOST }} > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
 
       - name: Run Ansible Playbook (Deploy Laravel)
         run: |
-          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key ~/.ssh/manokey.pem deploy_laravel.yml
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key ~/.ssh/manoraktaskey.pem deploy_laravel.yml
