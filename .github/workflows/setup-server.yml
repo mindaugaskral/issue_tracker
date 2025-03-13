@@ -29,9 +29,15 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/manoKey.pem
-          hmod 600 ~/.ssh/manoKey.pem
-          ssh-keyscan -H ${{ github.event.inputs.AWS_HOST }} > ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/manoKey.pem
+          ssh-keyscan -H ${{ github.event.inputs.AWS_HOST }} >> ~/.ssh/known_hosts
+      # - name: Setup SSH Key
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/manoKey.pem
+      #     hmod 600 ~/.ssh/manoKey.pem
+      #     ssh-keyscan -H ${{ github.event.inputs.AWS_HOST }} > ~/.ssh/known_hosts
+      #     chmod 644 ~/.ssh/known_hosts
 
       # 4️⃣ Run Ansible Playbook (Setup Server)
       - name: Run Ansible Playbook (Setup Server)
