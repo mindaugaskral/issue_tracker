@@ -27,4 +27,4 @@ jobs:
 
       - name: Run Ansible Playbook (Deploy Laravel)
         run: |
-          ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key ~/.ssh/id_ed25519 ansible/deploy_laravel.yml
+          ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key ~/.ssh/id_ed25519 deploy_laravel.yml
