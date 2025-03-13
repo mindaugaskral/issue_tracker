@@ -1,0 +1,55 @@
+---
+- name: Deploy Laravel Application
+  hosts: all
+  become: yes
+
+  vars:
+    project_dir: "/var/www/issue_tracker"
+    repo_url: "git@github.com:mindaugaskral/issue_tracker.git"
+
+  tasks:
+    # 1️⃣ Ensure project directory exists
+    - name: Ensure project directory exists
+      file:
+        path: "{{ project_dir }}"
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: "0755"
+
+    # 2️⃣ Clone Laravel repository
+    - name: Clone Laravel repository
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ project_dir }}"
+        version: main
+        force: yes
+
+    # 3️⃣ Install Laravel dependencies
+    - name: Install Laravel dependencies
+      command: docker run --rm -v {{ project_dir }}:/app -w /app composer install --no-dev --optimize-autoloader
+
+    # 4️⃣ Set Laravel permissions
+    - name: Set correct permissions
+      file:
+        path: "{{ project_dir }}/storage"
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: "0777"
+        recurse: yes
+
+    # 5️⃣ Run Laravel migrations
+    - name: Run database migrations
+      command: docker run --rm -v {{ project_dir }}:/app -w /app php:8.1-fpm php artisan migrate --force
+      environment:
+        DB_CONNECTION: mysql
+        DB_HOST: mysql-db
+        DB_PORT: 3306
+        DB_DATABASE: issue_tracker
+        DB_USERNAME: laravel
+        DB_PASSWORD: securepassword
+
+    # 6️⃣ Restart Laravel and Nginx
+    - name: Restart Docker containers
+      command: docker-compose -f "{{ project_dir }}/docker-compose.yml" up --build -d

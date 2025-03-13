@@ -1,0 +1,30 @@
+name: Deploy Laravel to EC2
+
+on:
+  workflow_dispatch:
+    inputs:
+      AWS_HOST:
+        description: "EC2 Instance IP Address"
+        required: true
+      AWS_USER:
+        description: "SSH Username (e.g., ubuntu, ec2-user)"
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AWS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ github.event.inputs.AWS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Run Ansible Playbook (Deploy Laravel)
+        run: |
+          ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key ~/.ssh/id_ed25519 ansible/deploy_laravel.yml
