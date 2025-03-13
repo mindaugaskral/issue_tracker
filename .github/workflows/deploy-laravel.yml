@@ -21,10 +21,10 @@ jobs:
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.AWS_PRIVATE_KEY }}" > ~/.ssh/id_ed25519.pub
-          chmod 600 ~/.ssh/id_ed25519
+          echo "${{ secrets.AWS_PRIVATE_KEY }}" > ~/.ssh/manokey.pem
+          chmod 600 ~/.ssh/manokey.pem
           ssh-keyscan -H ${{ github.event.inputs.AWS_HOST }} >> ~/.ssh/known_hosts
 
       - name: Run Ansible Playbook (Deploy Laravel)
         run: |
-          ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key ~/.ssh/id_ed25519 deploy_laravel.yml
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key ~/.ssh/manokey.pem deploy_laravel.yml
