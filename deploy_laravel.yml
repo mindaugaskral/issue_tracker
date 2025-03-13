@@ -21,9 +21,9 @@
         force: yes
         accept_hostkey: yes
 
-    # 3️⃣ Install Laravel dependencies
+    # 3️⃣ Install Laravel dependencies inside the existing Laravel container
     - name: Install Laravel dependencies
-      command: docker run --rm -v {{ project_dir }}:/app -w /app composer install --no-dev --optimize-autoloader
+      command: docker exec issue-tracker-app composer install --no-dev --optimize-autoloader
 
     # 4️⃣ Set Laravel permissions
     - name: Set correct permissions

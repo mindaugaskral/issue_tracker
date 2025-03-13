@@ -8,7 +8,7 @@ services:
     working_dir: /var/www
     volumes:
       - .:/var/www
-      - laravel_storage:/var/www/storage  # ✅ Persistent storage
+      - laravel_storage:/var/www/storage  # ✅ Persistent Laravel storage
     depends_on:
       - db
     environment:
@@ -50,3 +50,4 @@ services:
 
 volumes:
   db_data:
+  laravel_storage:  # ✅ Ensure volume is defined here
