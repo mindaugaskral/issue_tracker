@@ -8,14 +8,9 @@
     repo_url: "git@github.com:mindaugaskral/issue_tracker.git"
 
   tasks:
-    # 1️⃣ Ensure project directory exists
-    - name: Ensure project directory exists
-      file:
-        path: "{{ project_dir }}"
-        state: directory
-        owner: ubuntu
-        group: ubuntu
-        mode: "0755"
+   # 1️⃣ Ensure GitHub is a known host
+    - name: Add GitHub to known hosts
+      command: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
 
     # 2️⃣ Clone Laravel repository
     - name: Clone Laravel repository
@@ -24,6 +19,7 @@
         dest: "{{ project_dir }}"
         version: main
         force: yes
+        accept_hostkey: yes
 
     # 3️⃣ Install Laravel dependencies
     - name: Install Laravel dependencies
