@@ -80,13 +80,6 @@
         enabled: yes
         state: started
       when: php_fpm_version.stdout | length > 0
-  
-    # 4️⃣ Ensure PHP-FPM is Installed and Running
-    - name: Start and enable PHP-FPM service
-      systemd:
-        name: php8.1-fpm
-        enabled: yes
-        state: started
 
     # 5️⃣ Ensure Nginx is Installed and Running
     - name: Start and enable Nginx service
