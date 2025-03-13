@@ -41,4 +41,4 @@ jobs:
       # 4️⃣ Run Ansible Playbook (Setup Server)
       - name: Run Ansible Playbook (Setup Server)
         run: |
-          ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key ~/.ssh/manoKey.pem setup_server.yml
+          ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key manoKey.pem setup_server.yml
