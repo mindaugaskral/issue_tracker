@@ -25,21 +25,21 @@ jobs:
           sudo apt update -y
           sudo apt install -y ansible
 
-      - name: Setup SSH Key
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > manoKey.pem
-          chmod 600 manoKey.pem
-          ssh-keyscan -H ${{ github.event.inputs.AWS_HOST }} >> known_hosts
-          cat manoKey.pem
       # - name: Setup SSH Key
       #   run: |
-      #     mkdir -p ~/.ssh
-      #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/manoKey.pem
-      #     hmod 600 ~/.ssh/manoKey.pem
-      #     ssh-keyscan -H ${{ github.event.inputs.AWS_HOST }} > ~/.ssh/known_hosts
-      #     chmod 644 ~/.ssh/known_hosts
+      #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > manoKey.pem
+      #     chmod 600 manoKey.pem
+      #     ssh-keyscan -H ${{ github.event.inputs.AWS_HOST }} >> known_hosts
+      #     cat manoKey.pem
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/raktas.pem
+          hmod 600 ~/.ssh/raktas.pem
+          ssh-keyscan -H ${{ github.event.inputs.AWS_HOST }} > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
 
       # 4️⃣ Run Ansible Playbook (Setup Server)
       - name: Run Ansible Playbook (Setup Server)
         run: |
-          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key manoKey.pem setup_server.yml
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${{ github.event.inputs.AWS_HOST }}, -u ${{ github.event.inputs.AWS_USER }} --private-key raktas.pem setup_server.yml
